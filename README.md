@@ -15,7 +15,7 @@ TBD
 - Assignmentのクローン（各自PC内。下記、環境構築を参照のこと）
 
 ## 成績評価
-演習の課題（自由課題）を持って評価する。 
+演習の課題（自由課題）を持って評価する。
 Rmarkdownにより記述した再現可能な（コードを含めた）研究レポート（テーマの背景・分析手法・結果・考察・結論）を作成したレポジトリを提出する。
 
 ### 評価基準
@@ -39,23 +39,23 @@ Rmarkdownにより記述した再現可能な（コードを含めた）研究�
 11. 地図化（２）
 13. 演習（１）
 14. 演習（２）
-15. 演習（３）←課題提出  
+15. 演習（３）←課題提出
 
 ## References
 すべてオンラインで閲覧可能である。
 ### 教科書
 - [An Introduction to R](https://intro2r.com)
-- [geocomputation with R](https://geocompr.robinlovelace.net/)  
-それぞれ`Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License`である. 
+- [geocomputation with R](https://geocompr.robinlovelace.net/)
+それぞれ`Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License`である.
 
 ### 参考資料
-GIScience 
-- [Spatial Data Science](https://keen-swartz-3146c4.netlify.app/)  
-- [geospatial analysis](https://spatialanalysisonline.com/HTML/index.html)  
-- [Spatio-Temporal Statistics with R](https://spacetimewithr.org/)   
+GIScience
+- [Spatial Data Science](https://keen-swartz-3146c4.netlify.app/)
+- [geospatial analysis](https://spatialanalysisonline.com/HTML/index.html)
+- [Spatio-Temporal Statistics with R](https://spacetimewithr.org/)
 
 Basic R and GIS
-- [R for data science](https://r4ds.had.co.nz/)  
+- [R for data science](https://r4ds.had.co.nz/)
 - [GISオープン教材](https://gis-oer.github.io/gitbook/book/)
 
 
@@ -69,20 +69,22 @@ gh auth login
 # その後対話的に処理を実行し、登録する
 2 自身の好きな場所で本レポジトリをクローンする
 gh repo clone 2022ISci_class/XXXXXXX #XXXXXXXは各自のものに置き換えること！
-# もしくは git clone https://github.com/2022GISci_class/XXXXXXX.git 
+# もしくは git clone https://github.com/2022GISci_class/XXXXXXX.git
 3　ダウンロードしたレポジトリに移動する
 cd 2022GISci_class
-4 dockerコンテナを立てる
+4 自身の環境に応じてDockerfile, docker-compose.ymlを作成する。
+mac m1チップであればDockerfile_m1, docker-compose_m1.ymlをDockerfile, docker-compose、
+それ以外であればDockerfile_x86_64, docker-compose_x86_64.ymlをDockerfile, docker-composeとする
+5 dockerコンテナを立てる
 docker-compose up -d --b
 ```
 
-上記の設定ができたら、VScodeのDockerエクステンションより、`Open by browser`をクリックするとRstudio serverが立ち上がる。 
-もしくは``` http://localhost:8080 ```とブラウザで指定する。 
-userは`rstudio`, passwordは`passwd`である。  
+上記の設定ができたら、VScodeのDockerエクステンションより、`Open by browser`をクリックするとRstudio serverが立ち上がる。
+もしくは``` http://localhost:8080 ```とブラウザで指定する。
+userは`rstudio`, passwordは`passwd`である。
 
 
 ## 参考
 その他、簡易的にgeocomputation with Rの実行環境にアクセスする方法としては、
-[binder](https://mybinder.org/v2/gh/robinlovelace/geocompr/master?urlpath=rstudio)、もしくは[Rstudio cloud](https://rstudio.cloud/project/1642300)がある。 
+[binder](https://mybinder.org/v2/gh/robinlovelace/geocompr/master?urlpath=rstudio)、もしくは[Rstudio cloud](https://rstudio.cloud/project/1642300)がある。
 しかしながら、環境としては課題実行には向いていない。
-
