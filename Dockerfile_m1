@@ -13,6 +13,7 @@ RUN apt-get update \
     saga \
     grass
 
+
 RUN apt-get install -y \
     fonts-ipaexfont \
     fonts-noto-cjk
@@ -26,3 +27,6 @@ RUN R CMD javareconf \
 
 COPY renv.lock renv.lock
 RUN R -e 'renv::consent(provided = TRUE); renv::restore()'
+
+RUN apt-get install -y language-pack-ja
+RUN locale-gen ja_JP.UTF-8
