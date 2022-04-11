@@ -76,7 +76,7 @@ cd 2022GISci_class
 mac m1チップであればDockerfile_m1, docker-compose_m1.ymlをDockerfile, docker-compose、
 それ以外であればDockerfile_x86_64, docker-compose_x86_64.ymlをDockerfile, docker-composeとする
 5 dockerコンテナを立てる
-docker-compose up -d --b
+docker-compose up -d --build
 ```
 
 上記の設定ができたら、VScodeのDockerエクステンションより、`Open by browser`をクリックするとRstudio serverが立ち上がる。
