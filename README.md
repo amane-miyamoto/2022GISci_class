@@ -68,7 +68,7 @@ Basic R and GIS
 gh auth login
 # その後対話的に処理を実行し、登録する
 2 自身の好きな場所で本レポジトリをクローンする
-gh repo clone 2022ISci_class/XXXXXXX #XXXXXXXは各自のものに置き換えること！
+gh repo clone 2022GISci_class/XXXXXXX #XXXXXXXは各自のものに置き換えること！
 # もしくは git clone https://github.com/2022GISci_class/XXXXXXX.git
 3　ダウンロードしたレポジトリに移動する
 cd 2022GISci_class
