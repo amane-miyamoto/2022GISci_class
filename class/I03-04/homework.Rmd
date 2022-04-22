@@ -1,0 +1,195 @@
+---
+title: "homework"
+author: "amane"
+date: "2022/4/22"
+output: html_document
+---
+
+```{r chapter2-1}
+2+2
+
+log(1)
+log10(1)
+exp(1)
+sqrt(4)
+4^2
+pi
+```
+```{r chapter2-2}
+
+my_obj <- 48
+my_obj
+
+my_obj2 <- "R is cool"
+
+char_obj <- "hello"
+char_obj2 <- "world!"
+paste(char_obj,char_obj2)
+```
+```{r chapter2-3}
+my_vec <- c(2,3,1,6,4,3,3,7)
+my_vec
+
+mean(my_vec)
+var(my_vec)
+sd(my_vec)
+length(my_vec)
+
+my_seq <- 1:10
+
+my_seq2 <- seq(from = 1,to = 5,by = 0.5)
+my_seq2
+
+my_seq3 <- rep(2,time=10)
+my_seq3
+```
+
+```{r chapter2-4}
+my_vec
+my_vec[3]
+
+val_3 <- my_vec[3]
+val_3
+
+my_vec[c(1,5,6,8)]
+my_vec[3:8]
+
+my_vec[my_vec > 4]
+
+id <- my_vec > 4
+my_vec[id]
+
+val_4 <- my_vec[my_vec < 6 & my_vec > 2]
+val_4
+
+val_5 <- my_vec[my_vec > 6 | my_vec < 3]
+
+temp <- c(7.2,NA,7.1,6.9,6.5,5.8,5.8,5.5,NA,5.5)
+mean_temp <- mean(temp)
+mean_temp
+
+mean_temp2 <- mean(temp, na.rm = TRUE)
+mean_temp2
+```
+
+```{r chapter3-1}
+num <- 2.2
+class(num)
+
+char <- "hello"
+class(char)
+
+logi <- TRUE
+class(logi)
+
+is.numeric(num)
+is.character(char)
+is.logical(logi)
+
+class(num)
+num_char <- as.character(num)
+num_char
+class(num_char)
+```
+
+```{r chapter3-2}
+my_mat <- matrix(1:16, nrow = 4, byrow = TRUE)
+my_mat
+
+my_array <- array(1:16, dim = c(2,4,2))
+my_array
+
+rownames(my_mat) <- c("A","B","C","D")
+colnames(my_mat) <- c("a","b","c","d")
+my_mat
+
+list_1 <- list(c("black","yellow","orange"),c(TRUE,TRUE,FALSE,TRUE,FALSE,FALSE),matrix(1:6, nrow = 3))
+list_1
+
+list_2 <- list(colours = c("black","yellow","orange"),evaluation = c(TRUE,TRUE,FALSE,TRUE,FALSE,FALSE),time = matrix(1:6, nrow = 3))
+list_2
+
+names(list_1) <- c("colours","evaluation","time")
+
+p.height <- c(180,155,160,167,181)
+p.weight <- c(65,50,52,58,70)
+p.names <- c("Joanna","Charlotte","Helen","Karen","Amy")
+
+dataf <- data.frame(height = p.height,weight = p.weight,names = p.names)
+dataf
+
+dim(dataf)
+str(dataf)
+```
+
+```{r chapter3-3}
+flower <- read.csv("~/flower.csv")
+str(flower)
+names(flower)
+```
+
+```{r chapter3-4}
+flower$height
+f_height <- flower$height
+mean(f_height)
+summary(f_height)
+
+mean(flower$height)
+summary(flower$height)
+
+flower[1,4]
+flower$height[1]
+
+flower[c(1,5,12,30),c(1,3,6,8)]
+
+flower[1:8, ]
+flower[,1:3]
+
+flower[-(1:85),-c(4,7,8)]
+
+flower[1:5,c("treat","nitrogen","leafarea")]
+
+big_flower <- flower[flower$height > 12, ]
+big_flower
+
+flower$height
+
+nit_high <- flower[flower$nitrogen == "high", ]
+nit_high
+
+tip_med_2 <- subset(flower,treat == "tip" & nitrogen == "medium" & block == 2)
+tip_med_2
+```
+
+```{r chapter3-5}
+summary(flower)
+summary(flower[,4:7])
+
+summary(flower$leafarea)
+
+table(flower$nitrogen)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
