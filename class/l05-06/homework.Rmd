@@ -1,0 +1,170 @@
+---
+title: "homework"
+author: "amane"
+date: "2022/5/9"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r chapter1.2}
+library(leaflet)  #パッケージの読み込み
+popup = c("Robin", "Jakub", "Jannes")
+leaflet() %>%
+  addProviderTiles("NASAGIBS.ViirsEarthAtNight2012") %>%  #表示する地図の種類を選択
+  addMarkers(lng = c(-3, 23, 11),  #経度設定
+             lat = c(52, 53, 49),  #緯度設定
+             popup = popup)
+```
+
+```{r chapter2 pre}
+library(sf)  #ベクトルデータ
+library(raster)  #ラスターデータ
+library(spData)  #地図データ
+library(spDataLarge)
+```
+
+```{r chapter2.2.1}
+world  #spDataに含まれているデータセット
+plot(world)
+```
+
+```{r world life_exp}
+world["lifeExp"]  #lifeExpの配列を選択
+world %>% dplyr::select(lifeExp) #上と同じ
+world %>% dplyr::select(lifeExp) %>% st_drop_geometry()  #lifeExpの中身だけを表示
+st_drop_geometry(world["lifeExp"]) #上と同じ
+class(world)
+plot(world["lifeExp"]) #geometryで表示
+```
+
+```{r union}
+world_asia = world[world$continent == "Asia", ]  #Asiaだけを選択
+asia = st_union(world_asia)  #Asiaの形を切り取り
+#> although coordinates are longitude/latitude, st_union assumes that they are planar
+
+world_asia
+asia
+
+plot(world_asia)
+plot(asia)
+
+plot(world["pop"], reset = FALSE)  #worldのpopを地図にプロット
+plot(asia, add = TRUE, col="red")  #Asiaだけを赤でプロット
+```
+
+```{r multipoint}
+multipoint_matrix = rbind(c(5, 2), c(1, 3), c(3, 4), c(3, 2))  #位置を行列にして表示
+multi_point <- st_multipoint(multipoint_matrix)
+
+multipoint_matrix
+class(multi_point)
+multi_point
+```
+
+```{r 2.2.8}
+lnd_point = st_point(c(0.1, 51.5))                 #ロンドンの座標
+class(lnd_point)
+lnd_geom = st_sfc(lnd_point, crs = 4326)           #crs = coordinate reference system
+lnd_attrib = data.frame(                           # data.frame object
+  name = "London",
+  temperature = 25,
+  date = as.Date("2017-06-21")
+  )
+lnd_attrib
+lnd_sf = st_sf(lnd_attrib, geometry = lnd_geom)    # sf object
+lnd_sf
+```
+
+```{r 2.3.2 raster}
+raster_filepath = system.file("raster/srtm.tif", package = "spDataLarge")
+new_raster = raster(raster_filepath)  #ラスターレイヤーを作成
+new_raster
+
+plot(new_raster)
+```
+
+```{r 2.3.3 brick}
+multi_raster_file = system.file("raster/landsat.tif", package = "spDataLarge")
+multi_raster_file
+r_brick = brick(multi_raster_file)  #複数のラスターレイヤーを作成
+r_brick
+
+plot(r_brick)
+```
+
+```{r ndvi}
+ndvi = (r_brick[[4]] - r_brick[[3]])/(r_brick[[4]] + r_brick[[3]])  #正規化植生指数
+plot(ndvi)
+```
+
+```{r 3.1 pre}
+library(sf)
+library(raster)
+library(dplyr)
+library(stringr) # for working with strings (pattern matching)
+library(tidyr)   # for unite() and separate()
+```
+
+```{r 3.2.1}
+sel_area = world$area_km2 < 10000  #10000km2未満のデータを抽出
+summary(sel_area) # a logical vector
+#>    Mode   FALSE    TRUE 
+#> logical     170       7
+small_countries = world[sel_area, ]
+small_countries
+plot(small_countries)
+plot(small_countries["pop"])  #popだけプロット
+
+world %>% filter(area_km2 < 10000) %>% dplyr::select(pop) %>% plot()  #上までのプロットと同じ
+```
+
+```{r 3.2.2 top n}
+##GDPperCapitalがtop10の国をピックアップして地図化してみましょう。
+world %>%  top_n(n = 10, wt = gdpPercap) %>% 
+  dplyr::select(gdpPercap) %>% 
+  plot()
+
+##GDPperCapitalがworst10の国をピックアップして地図化してみましょう。
+
+world %>%  top_n(n = -10, wt = gdpPercap) %>%   #nを-にすると下から数えられる
+  dplyr::select(gdpPercap) %>% 
+  plot()
+
+##日本はGDPperCapitalで上から何番目でしょう。
+#1.gdpPercapをsort
+gdp_sort <- world %>% arrange(desc(gdpPercap)) %>%   #arrangeで昇順にsort。descで降順
+  dplyr::select(gdpPercap) %>% 
+  st_drop_geometry()
+
+#2.日本のgdpPercapを取り出したい
+jp_gdp <- world %>% filter(name_long == "Japan") %>% 
+  dplyr::select(gdpPercap) %>% 
+  st_drop_geometry() %>% 
+  as.numeric()
+
+#3.gdpPercapが上からいくつか調べればいい
+which(gdp_sort==jp_gdp)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
