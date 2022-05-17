@@ -1,0 +1,243 @@
+---
+title: "0517Lesson"
+author: "amane"
+date: "2022/5/17"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r pre}
+library(sf)
+library(raster)
+library(dplyr)
+library(spData)
+library(spDataLarge)
+```
+
+```{r chapter6.1}
+#距離計算　直交座標系に直して計算が行われる
+london = data.frame(lon = -0.1, lat = 51.5) %>% 
+  st_as_sf(coords = c("lon", "lat"))
+st_is_longlat(london)
+
+london_geo = st_set_crs(london, 4326)
+st_is_longlat(london_geo)
+
+london_buff_no_crs = st_buffer(london, dist = 1)
+london_buff = st_buffer(london_geo, dist = 1)
+
+london_proj = data.frame(x = 530000, y = 180000) %>% 
+  st_as_sf(coords = 1:2, crs = 27700)
+
+st_crs(london_proj)
+
+london_proj_buff = st_buffer(london_proj, 111320)
+```
+
+```{r chapter6.3}
+
+lonlat2UTM = function(lonlat) {
+  utm = (floor((lonlat[1] + 180) / 6) %% 60) + 1
+  if(lonlat[2] > 0) {
+    utm + 32600
+  } else{
+    utm + 32700
+  }
+}
+
+epsg_utm_auk = lonlat2UTM(c(174.7, -36.9))
+epsg_utm_lnd = lonlat2UTM(st_coordinates(london))
+st_crs(epsg_utm_auk)$proj4string
+st_crs(epsg_utm_lnd)$proj4string
+```
+
+```{r chapter6.4}
+crs_lnd = st_crs(cycle_hire_osm)
+class(crs_lnd)
+crs_lnd$epsg
+
+crs_codes = rgdal::make_EPSG()[1:2]
+dplyr::filter(crs_codes, code == 27700)
+```
+
+```{r chapter6.5}
+world_mollweide = st_transform(world, crs = "+proj=moll")
+```
+
+```{r chapter6.6}
+cat_raster = raster(system.file("raster/nlcd2011.tif", package = "spDataLarge"))
+
+crs(cat_raster)
+
+unique(cat_raster)
+
+wgs84 = "+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs"
+cat_raster_wgs84 = projectRaster(cat_raster, crs = wgs84, method = "ngb")
+```
+
+```{r chapter 7.3}
+library(rnaturalearth)
+usa = ne_countries(country = "United States of America") # United States borders
+class(usa)
+
+library(osmdata)
+parks = opq(bbox = "leeds uk") %>% 
+  add_osm_feature(key = "leisure", value = "park") %>% 
+  osmdata_sf()
+```
+
+```{r chapter7.6.1}
+#ベクター画像で読み込み
+vector_filepath = system.file("shapes/world.gpkg", package = "spData")
+world = st_read(vector_filepath)
+
+cycle_hire_txt = system.file("misc/cycle_hire_xy.csv", package = "spData")
+cycle_hire_xy = st_read(cycle_hire_txt, options = c("X_POSSIBLE_NAMES=X",
+                                                    "Y_POSSIBLE_NAMES=Y"))
+
+world_txt = system.file("misc/world_wkt.csv", package = "spData")
+world_wkt = read_sf(world_txt, options = "GEOM_POSSIBLE_NAMES=WKT")
+# the same as
+world_wkt = st_read(world_txt, options = "GEOM_POSSIBLE_NAMES=WKT", 
+                    quiet = TRUE, stringsAsFactors = FALSE, as_tibble = TRUE)
+```
+
+```{r chapter7.6.2}
+raster_filepath = system.file("raster/srtm.tif", package = "spDataLarge")
+single_layer = raster(raster_filepath)
+
+multilayer_filepath = system.file("raster/landsat.tif", package = "spDataLarge")
+band3 = raster(multilayer_filepath, band = 3)
+
+multilayer_brick = brick(multilayer_filepath)  #小さいデータで利用
+multilayer_stack = stack(multilayer_filepath)  #大きいデータで利用
+```
+
+```{r chpater7.7.1}
+st_write(obj = world, dsn = "world.shp")
+```
+
+```{r chapter7.7.2}
+#ラスター画像作成
+writeRaster(single_layer, filename = "my_raster.tif", datatype = "INT2U")
+writeRaster(x = single_layer,
+            filename = "my_raster.tif",
+            datatype = "INT2U",
+            options = c("COMPRESS=DEFLATE"),
+            overwrite = TRUE)
+```
+
+```{r chapter7.8}
+png(filename = "lifeExp.png", width = 500, height = 350)
+plot(world["lifeExp"])
+dev.off()
+
+library(tmap)
+tmap_obj = tm_shape(world) + tm_polygons(col = "lifeExp")
+tmap_save(tm = tmap_obj, filename = "lifeExp_tmap.png")
+```
+
+```{r exercise}
+test1 = st_read("/home/rstudio/class/data/JPN_adm/JPN_adm0.shp")
+test2 = raster("/home/rstudio/class/data/JPN_msk_cov/JPN_msk_cov.vrt")
+
+st_write(obj = test1, dsn = "test1.gpkg")
+
+plot(test1)
+
+library(tmap)
+tmap_obj = tm_shape(test1) + tm_polygons(col = "ID_0")
+tmap_save(tm = tmap_obj, filename = "test1.png")
+```
+
+```{r chapter8.2.1}
+# Add fill layer to nz shape
+tm_shape(nz) +
+  tm_fill() 
+# Add border layer to nz shape
+tm_shape(nz) +
+  tm_borders() 
+# Add fill and border layers to nz shape
+tm_shape(nz) +
+  tm_fill() +
+  tm_borders() 
+```
+
+```{r chapter8.2.2}
+map_nz = tm_shape(nz) + tm_polygons()
+class(map_nz)
+
+map_nz1 = map_nz +
+  tm_shape(nz_elev) + tm_raster(alpha = 0.7)  #2種類のデータを組み合わせている
+
+nz_water = st_union(nz) %>% st_buffer(22200) %>% 
+  st_cast(to = "LINESTRING")
+map_nz2 = map_nz1 +
+  tm_shape(nz_water) + tm_lines()
+
+map_nz3 = map_nz2 +
+  tm_shape(nz_height) + tm_dots()
+
+tmap_arrange(map_nz1, map_nz2, map_nz3)
+```
+
+```{r chapter8.2.3}
+ma1 = tm_shape(nz) + tm_fill(col = "red")
+ma2 = tm_shape(nz) + tm_fill(col = "red", alpha = 0.3)
+ma3 = tm_shape(nz) + tm_borders(col = "blue")
+ma4 = tm_shape(nz) + tm_borders(lwd = 3)
+ma5 = tm_shape(nz) + tm_borders(lty = 2)
+ma6 = tm_shape(nz) + tm_fill(col = "red", alpha = 0.3) +
+  tm_borders(col = "blue", lwd = 3, lty = 2)
+tmap_arrange(ma1, ma2, ma3, ma4, ma5, ma6)
+
+plot(st_geometry(nz), col = nz$Land_area)  # works
+tm_shape(nz) + tm_fill(col = nz$Land_area) # fails
+
+tm_shape(nz) + tm_fill(col = "Land_area")
+```
+
+```{r chapter8.2.4}
+tm_shape(nz) + tm_polygons(col = "Median_income")
+breaks = c(0, 3, 4, 5) * 10000
+tm_shape(nz) + tm_polygons(col = "Median_income", breaks = breaks)
+tm_shape(nz) + tm_polygons(col = "Median_income", n = 10)
+tm_shape(nz) + tm_polygons(col = "Median_income", palette = "BuGn")
+
+tm_shape(nz) + tm_polygons("Population", palette = "Blues")
+tm_shape(nz) + tm_polygons("Population", palette = "YlOrBr")
+```
+
+```{r chapter8.2.5}
+map_nz + 
+  tm_compass(type = "8star", position = c("left", "top")) +  #方位記号
+  tm_scale_bar(breaks = c(0, 100, 200), text.size = 1)       #縮尺
+
+map_nz + tm_layout(title = "New Zealand")
+map_nz + tm_layout(scale = 5)
+map_nz + tm_layout(bg.color = "lightblue")
+map_nz + tm_layout(frame = FALSE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
