@@ -141,16 +141,22 @@ tmap_save(tm = tmap_obj, filename = "lifeExp_tmap.png")
 ```
 
 ```{r exercise}
-test1 = st_read("/home/rstudio/class/data/JPN_adm/JPN_adm0.shp")
+test1 = st_read("/home/rstudio/class/data/JPN_adm/JPN_adm1.shp")
 test2 = raster("/home/rstudio/class/data/JPN_msk_cov/JPN_msk_cov.vrt")
+test3 = raster("/home/rstudio/class/data/JPN_msk_pop/jpn_msk_pop.vrt")
+test4 = st_read("/home/rstudio/class/data/JPN_rds/JPN_roads.shp")
 
-st_write(obj = test1, dsn = "test1.gpkg")
+#st_write(obj = test1, dsn = "test1.gpkg")
 
 plot(test1)
+#plot(test2)
+#plot(test3)
+#plot(test4)
+
 
 library(tmap)
 tmap_obj = tm_shape(test1) + tm_polygons(col = "ID_0")
-tmap_save(tm = tmap_obj, filename = "test1.png")
+tmap_save(tm = tmap_obj, filename = "ID_0_1.png")
 ```
 
 ```{r chapter8.2.1}
