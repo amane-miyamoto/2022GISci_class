@@ -1,0 +1,55 @@
+---
+title: "tmap_script"
+author: "amane"
+date: "2022/5/19"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r install}
+library(sf)
+library(raster)
+library(dplyr)
+library(spData)
+library(spDataLarge)
+library(tmap)
+library(leaflet)
+library(ggplot2)
+library(rnaturalearth)
+library(osmdata)
+```
+```{r tmap}
+adm0 = st_read("/home/rstudio/class/data/JPN_adm/JPN_adm0.shp")
+adm1 = st_read("/home/rstudio/class/data/JPN_adm/JPN_adm1.shp")
+adm2 = st_read("/home/rstudio/class/data/JPN_adm/JPN_adm2.shp")
+
+tmap_obj0 = tm_shape(adm0) + tm_polygons(col = "ID_0")
+tmap_obj1 = tm_shape(adm1) + tm_polygons(col = "ID_0")
+tmap_obj2 = tm_shape(adm2) + tm_polygons(col = "ID_0")
+
+tmap_obj = tmap_arrange(tmap_obj0, tmap_obj1, tmap_obj2)
+tmap_save(tm = tmap_obj, filename = "ID_0.png")
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
