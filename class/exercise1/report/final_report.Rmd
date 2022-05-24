@@ -37,7 +37,7 @@ CCCCCCCCCCCCCCC.
 ## 1. はじめに
 ### 1.1 背景
 XXXXXXXX。 
-Toblerは... [@tobler1970computer]。
+Toblerは... [@tobler1970computer]。(メモ)参考文献の書き方
 XXXXXXXXXXXX。  
 
 ### 1.2 目的

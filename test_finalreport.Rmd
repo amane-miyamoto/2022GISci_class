@@ -1,0 +1,77 @@
+---
+title: "test_final_report"
+author: "amane"
+date: "2022/5/24"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r .xmldawnload}
+install.packages("XML")
+library(XML)
+library(xml2)
+library(sf)
+library(raster)
+library(dplyr)
+library(spData)
+```
+
+```{r xml_book}
+base_url = "http://www.fao.org"
+endpoint = "/figis/geoserver/wfs"
+q = list(request = "GetCapabilities")
+res = httr::GET(url = httr::modify_url(base_url, path = endpoint), query = q)
+res$url
+
+txt = httr::content(res, "text")
+xml = xml2::read_xml(txt)
+
+xml
+
+qf = list(request = "GetFeature", typeName = "area:FAO_AREAS")
+file = tempfile(fileext = ".gml")
+httr::GET(url = base_url, path = endpoint, query = qf, httr::write_disk(file))
+fao_areas = sf::read_sf(file)
+
+library(ows4R)
+wfs = WFSClient$new("http://www.fao.org/figis/geoserver/wfs",
+                      serviceVersion = "1.0.0", logger = "INFO")
+fao_areas = wfs$getFeatures("area:FAO_AREAS")
+```
+
+```{r .xmluse}
+
+restaurant_license_xml = as_list(read_xml("/home/rstudio/P03-07/P03-07.xml"))
+
+#txt = httr::content(restaurant_license_xml, "text")
+
+xml_df = tibble::as_tibble(restaurant_license_xml) %>%
+  unnest_longer(exchangeMetadata)
+
+library(tmap)
+tmap_obj = tm_shape(data) + 
+tmap_save(tm = data$object, filename = "test_final")
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
