@@ -10,13 +10,18 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r .xmldawnload}
-install.packages("XML")
 library(XML)
 library(xml2)
 library(sf)
 library(raster)
 library(dplyr)
 library(spData)
+library(spDataLarge)
+library(tmap)
+library(leaflet)
+library(ggplot2)
+library(rnaturalearth)
+library(osmdata)
 ```
 
 ```{r xml_book}
@@ -54,6 +59,26 @@ xml_df = tibble::as_tibble(restaurant_license_xml) %>%
 library(tmap)
 tmap_obj = tm_shape(data) + 
 tmap_save(tm = data$object, filename = "test_final")
+```
+
+```{r nuclear .shp}
+# 0001->事業者名等(char)
+#0002-> 発電所施設名称(char)
+#0003->所在地(char) 0004->既設・建設中区分(コード)
+#0005->運転開始年月日(時間型)
+#0006->発電所出力(int)
+#0007->RPS法認定日(時間型)
+#0008->発電出力 kW(int)
+#0009->グリーン発言電力設備認定日(時間型)
+#0010->設備容量 kw(int)
+#0601->当該発電施設の施設番号(char)
+#0602->炉型(コード)
+#0603->電源開発基本計画(時間型)
+#0604->原子炉設置許可年月日(時間型)
+#0605->第1回工事計画認可年月(時間型)
+nuclear_point = st_read("/home/rstudio/class/data/nuclear_point/P03-13-g_NuclearPowerPlant.shp")
+
+plot(nuclear_point)
 ```
 
 ## R Markdown
