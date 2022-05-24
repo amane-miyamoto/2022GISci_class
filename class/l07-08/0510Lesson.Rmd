@@ -266,8 +266,8 @@ plot(srtm_masked)
 ```
 
 ```{r chapter5.4.2}
-plot(zion_nlcd)
 zion_nlcd = raster::extract(nlcd, zion, df = TRUE, factors = TRUE) 
+plot(zion_nlcd)
 dplyr::select(zion_nlcd, ID, levels) %>% 
   tidyr::gather(key, value, -ID) %>%
   group_by(ID, key, value) %>%
