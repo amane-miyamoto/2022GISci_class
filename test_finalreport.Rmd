@@ -22,46 +22,49 @@ library(leaflet)
 library(ggplot2)
 library(rnaturalearth)
 library(osmdata)
+library(rvest)
+library(stringr)
+library(magrittr)
 ```
 
 ```{r xml_book}
-base_url = "http://www.fao.org"
-endpoint = "/figis/geoserver/wfs"
-q = list(request = "GetCapabilities")
-res = httr::GET(url = httr::modify_url(base_url, path = endpoint), query = q)
-res$url
+#base_url = "http://www.fao.org"
+#endpoint = "/figis/geoserver/wfs"
+#q = list(request = "GetCapabilities")
+#res = httr::GET(url = httr::modify_url(base_url, path = endpoint), query = q)
+#res$url
 
-txt = httr::content(res, "text")
-xml = xml2::read_xml(txt)
-
-xml
-
-qf = list(request = "GetFeature", typeName = "area:FAO_AREAS")
-file = tempfile(fileext = ".gml")
-httr::GET(url = base_url, path = endpoint, query = qf, httr::write_disk(file))
-fao_areas = sf::read_sf(file)
-
-library(ows4R)
-wfs = WFSClient$new("http://www.fao.org/figis/geoserver/wfs",
-                      serviceVersion = "1.0.0", logger = "INFO")
-fao_areas = wfs$getFeatures("area:FAO_AREAS")
+# txt = httr::content(res, "text")
+# xml = xml2::read_xml(txt)
+# 
+# xml
+# 
+# qf = list(request = "GetFeature", typeName = "area:FAO_AREAS")
+# file = tempfile(fileext = ".gml")
+# httr::GET(url = base_url, path = endpoint, query = qf, httr::write_disk(file))
+# fao_areas = sf::read_sf(file)
+# 
+# library(ows4R)
+# wfs = WFSClient$new("http://www.fao.org/figis/geoserver/wfs",
+#                       serviceVersion = "1.0.0", logger = "INFO")
+# fao_areas = wfs$getFeatures("area:FAO_AREAS")
 ```
 
 ```{r .xmluse}
 
-restaurant_license_xml = as_list(read_xml("/home/rstudio/P03-07/P03-07.xml"))
+#restaurant_license_xml = as_list(read_xml("/home/rstudio/P03-07/P03-07.xml"))
 
 #txt = httr::content(restaurant_license_xml, "text")
 
-xml_df = tibble::as_tibble(restaurant_license_xml) %>%
-  unnest_longer(exchangeMetadata)
-
-library(tmap)
-tmap_obj = tm_shape(data) + 
-tmap_save(tm = data$object, filename = "test_final")
+# xml_df = tibble::as_tibble(restaurant_license_xml) %>%
+#   unnest_longer(exchangeMetadata)
+# 
+# library(tmap)
+# tmap_obj = tm_shape(data) + 
+# tmap_save(tm = data$object, filename = "test_final")
 ```
 
-```{r nuclear .shp}
+```{r nuclear .shp, include=FALSE}
 # 0001->事業者名等(char)
 #0002-> 発電所施設名称(char)
 #0003->所在地(char) 0004->既設・建設中区分(コード)
@@ -78,14 +81,28 @@ tmap_save(tm = data$object, filename = "test_final")
 #0605->第1回工事計画認可年月(時間型)
 nuclear_point = st_read("/home/rstudio/class/data/nuclear_point/P03-13-g_NuclearPowerPlant.shp")
 
+nuclear_point
+
 plot(nuclear_point)
+
+earthquake_point = st_read("/home/rstudio/class/data/earthquakedata.geojson")
+JPN_earthquake = st_read("/home/rstudio/class/data/JPN_earthquake.geojson")
+
+plot(earthquake_point)
+
+head(earthquake_point)
+head(JPN_earthquake)
+
+#earthquake_obj = tm_shape(earthquake_point) + tm_polygons(col = "place")
 ```
+
 
 ## R Markdown
 
 This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
 
 ```{r cars}
 summary(cars)
