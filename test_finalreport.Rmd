@@ -25,6 +25,7 @@ library(osmdata)
 library(rvest)
 library(stringr)
 library(magrittr)
+library(stringr)
 ```
 
 ```{r xml_book}
@@ -85,6 +86,7 @@ nuclear_point
 
 plot(nuclear_point)
 
+#search from USGS
 earthquake_point = st_read("/home/rstudio/class/data/earthquakedata.geojson")
 JPN_earthquake = st_read("/home/rstudio/class/data/JPN_earthquake.geojson")
 
@@ -93,7 +95,13 @@ plot(earthquake_point)
 head(earthquake_point)
 head(JPN_earthquake)
 
+ a <- JPN_earthquake[str_detect(JPN_earthquake$place, "Japan", negate = FALSE), ]
+
 #earthquake_obj = tm_shape(earthquake_point) + tm_polygons(col = "place")
+
+JPN = st_read("/home/rstudio/class/data/JPN_adm/JPN_adm0.shp")
+
+tm_shape(nuclear_point) + tm_dots() + tm_shape(JPN_earthquake) +tm_dots()
 ```
 
 
