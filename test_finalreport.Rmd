@@ -87,21 +87,22 @@ nuclear_point
 plot(nuclear_point)
 
 #search from USGS
-earthquake_point = st_read("/home/rstudio/class/data/earthquakedata.geojson")
-JPN_earthquake = st_read("/home/rstudio/class/data/JPN_earthquake.geojson")
+earthquake = st_read("/home/rstudio/class/data/JPN_earthquake.geojson")
 
 plot(earthquake_point)
 
 head(earthquake_point)
 head(JPN_earthquake)
 
- a <- JPN_earthquake[str_detect(JPN_earthquake$place, "Japan", negate = FALSE), ]
+JPN_earthquake <- earthquake[str_detect(JPN_earthquake$place, "Japan", negate = FALSE), ]
 
 #earthquake_obj = tm_shape(earthquake_point) + tm_polygons(col = "place")
 
 JPN = st_read("/home/rstudio/class/data/JPN_adm/JPN_adm0.shp")
 
-tm_shape(nuclear_point) + tm_dots() + tm_shape(JPN_earthquake) +tm_dots()
+tmap_mode("view")
+
+tm_shape(JPN) + tm_borders() + tm_shape(nuclear_point) + tm_dots(col = "red") + tm_shape(JPN_earthquake) + tm_dots() + tm_scale_bar()
 ```
 
 
