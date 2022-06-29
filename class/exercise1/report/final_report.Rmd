@@ -36,12 +36,11 @@ CCCCCCCCCCCCCCC.
 
 ## 1. はじめに
 ### 1.1 背景
-XXXXXXXX。 
+東日本大震災で福島第一原子力発電所で事故が発生した。事故の発生原因は津波だった。 
 Toblerは... [@tobler1970computer]。(メモ)参考文献の書き方
-XXXXXXXXXXXX。  
 
 ### 1.2 目的
-XXXXXXXX。   
+福島第一原子力発電所と同じ事故が発生する懸念を持っている原子力発電所はあるか。   
 
 ## 2. 手法
 XXXXXXXX。
