@@ -86,14 +86,14 @@ library(stringr)
 #0603->電源開発基本計画(時間型)
 #0604->原子炉設置許可年月日(時間型)
 #0605->第1回工事計画認可年月(時間型)
-nuclear = st_read("/home/rstudio/class/data/nuclear_point/P03-13-g_NuclearPowerPlant.shp")
+nuclear = st_read("/home/rstudio/class/exercise1/report/nuclear_point/P03-13-g_NuclearPowerPlant.shp")
 
 nuclear_point <- nuclear[,-1]
 
-JPN = st_read("/home/rstudio/class/data/JPN_adm/JPN_adm0.shp")
+JPN = st_read("/home/rstudio/class/exercise1/report/JPN_adm/JPN_adm0.shp")
 
 #search from USGS
-earthquake = st_read("/home/rstudio/class/data/JPN_earthquake.geojson")
+earthquake = st_read("/home/rstudio/class/exercise1/report/JPN_earthquake.geojson")
 
 JPN_earthquake <- earthquake[str_detect(earthquake$place, "Japan", negate = FALSE), ]
 
