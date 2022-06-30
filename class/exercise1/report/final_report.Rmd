@@ -1,7 +1,7 @@
 ---
-title: "GIScience class final report"
-author: "YOUR NAME"
-date: "SUBMISSION DATE"
+title: "津波による原子力発電所事故の危険性調査"
+author: "宮本 周"
+date: "6月30日"
 output:
   html_document:
     df_print: paged
@@ -10,7 +10,7 @@ output:
     toc_float: true
   github_document:
     toc: yes
-subtitle: "テーマ or タイトル"
+subtitle: ""
 fontsize: 11pt
 linestretch: 1.2
 link-citations: yes
@@ -22,47 +22,86 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ## 0. 要旨
-AAAAAAAAAAAAAAAA. 
-BBBBBBBBBBBBBBBB. 
-CCCCCCCCCCCCCCC.   
-
-
+東日本大震災で発生した津波の影響により、福島第一原子力発電所で事故が発生し、大きな影響を及ぼした。本論文では福島第一原子力発電所と同様の事故を起こす危険性がある原子力発電所があるかまた、危険性の少ない原子力発電所はあるかを地理情報データを用いて調査し、考察を行った。
 
 <br>
 <br>
-  
-  下のフォーマットは一例です。　
-レポートの構成は多少替えても大丈夫です。
+
 
 ## 1. はじめに
 ### 1.1 背景
-東日本大震災で福島第一原子力発電所で事故が発生した。事故の発生原因は津波だった。 
-Toblerは... [@tobler1970computer]。(メモ)参考文献の書き方
+3月11日に起こった東日本大震災により福島第一原子力発電所で事故が発生した。事故の発生原因は津波だった。2020年現在でも帰還困難地域が存在する[@Evacuation]など、長きにわたり大きな問題となっている。しかし、世界に目を向けるとフランスでは原子力発電所を盛んに利用しており、全体の75%[@electro]を占めるほどである。フランスでは人が揺れを感じる程の地震は僅かしか発生しておらず[@France]、津波による被害を懸念する必要がないので、原子力発電所を利用できている。
 
 ### 1.2 目的
-福島第一原子力発電所と同じ事故が発生する可能性を持っている原子力発電所はあるか、また津波の被害から安全に利用可能と想定される原子力発電所はあるかについて調査する。   
+本論文では、福島第一原子力発電所と同じ事故が発生する可能性を持っている原子力発電所はあるか、また津波の被害から安全に利用可能と想定される原子力発電所はあるかについて実験し、日本で原子力発電所を利用する危険性と安全に原子力発電所を利用できる地域を調査する。 
 
 ## 2. 手法
-現在設置されている原子力発電所の位置と過去○○年に起こった地震の震源の位置を地図上にプロットし、津波の被害を受ける可能性のある原子力発電所を調べる。
-XXXXXXXXXXXX。  
+現在設置されている原子力発電所の位置データと過去に起こった地震の震源の位置データを地図上にプロットし、津波の被害を受ける可能性のある原子力発電所を調べる。
 
 ## 3. データ
-現在設置されている原子力発電所の位置データを○○から得た。
-加えて、過去○○年に起こった地震の震源位置データを○○から得た。ただし、今回利用する震源位置データは津波の発生条件である震度7以上かつ深さ30m以内で発生した地震の震源のみとする。  
+現在設置されている原子力発電所の位置データを国土交通省のHP[@nuclear]より取得した。
+加えて、日本で地震の計測が始まった1912年から現在までの過去110年に起こった地震の震源位置データをUSGS[@USGS]から取得した。ただし、今回利用する震源位置データは被害を起こす可能性のある津波の発生条件である震度7以上かつ深さ40km以内[@earthquake]で発生した地震の震源のみとする。福島第一原子力発電所と東日本大震災の震源地までの距離以内の位置を危険位置とする。
 
 ## 4. 結果
-XXXXXXXX。
-XXXXXXXXXXXX。  
+プロット結果を##7. に記載する。黒い点が地震の震源であり、赤い円が原子力発電所の位置を中心として津波によって原子力発電所に被害が発生する可能性を含む範囲を示す。
 
 ## 5. 考察
-XXXXXXXX。
-XXXXXXXXXXXX。  
+図から、ほとんどの赤い円の中に地震の震源があり、津波による原子力発電所に被害が発生する可能性が高いとみられる。ただ、志賀原子力発電所と大間原子力発電所は円の中に震源が存在していないことがわかった。そのため、この二つの原子力発電所は今後地震が発生したときに津波の被害を受ける可能性が低いと予想される。
 
 ## 6. 結論
-XXXXXXXX。
-XXXXXXXXXXXX。  
+現在日本で設置されている原子力発電所のほとんどは福島第一原子力発電所と同様の事故を起こす可能性が高く、撤去することを薦める。しかし、志賀原子力発電所と大間原子力発電所に関しては事故が発生する可能性が低いとみられるため、今後も稼働し続けて問題ない。
 
 ## 7. Graphic Abstract
-レポートを表す１枚の図をここで示す。
+```{r .xmldawnload, include=FALSE}
+library(XML)
+library(xml2)
+library(sf)
+library(raster)
+library(dplyr)
+library(spData)
+library(spDataLarge)
+library(tmap)
+library(leaflet)
+library(ggplot2)
+library(rnaturalearth)
+library(osmdata)
+library(rvest)
+library(stringr)
+library(magrittr)
+library(stringr)
+```
+
+```{r test, include=FALSE}
+#0001->事業者名等(char)
+#0002-> 発電所施設名称(char)
+#0003->所在地(char) 0004->既設・建設中区分(コード)
+#0005->運転開始年月日(時間型)
+#0006->発電所出力(int)
+#0007->RPS法認定日(時間型)
+#0008->発電出力 kW(int)
+#0009->グリーン発言電力設備認定日(時間型)
+#0010->設備容量 kw(int)
+#0601->当該発電施設の施設番号(char)
+#0602->炉型(コード)
+#0603->電源開発基本計画(時間型)
+#0604->原子炉設置許可年月日(時間型)
+#0605->第1回工事計画認可年月(時間型)
+nuclear = st_read("/home/rstudio/class/data/nuclear_point/P03-13-g_NuclearPowerPlant.shp")
+
+nuclear_point <- nuclear[,-1]
+
+JPN = st_read("/home/rstudio/class/data/JPN_adm/JPN_adm0.shp")
+
+#search from USGS
+earthquake = st_read("/home/rstudio/class/data/JPN_earthquake.geojson")
+
+JPN_earthquake <- earthquake[str_detect(earthquake$place, "Japan", negate = FALSE), ]
+
+JPN_earthquake <- JPN_earthquake[,-1]
+```
+
+```{r nuclear, echo=FALSE, warning=FALSE}
+tm_shape(JPN) + tm_borders() + tm_shape(nuclear_point) + tm_symbols(size = 15, alpha = 0, border.col = "red") + tm_shape(JPN_earthquake) + tm_dots() + tm_scale_bar(breaks = c(0, 100, 200), text.size = 1)
+```
 
 ## 8. 参考文献
